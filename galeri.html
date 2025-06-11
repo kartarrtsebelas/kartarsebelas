@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeri Kegiatan</title>
+  <link rel="stylesheet" href="style-galeri.css" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header>
+    <h1>Galeri Kegiatan</h1>
+    <div class="filter-buttons">
+      <button onclick="filterTahun('all')" class="active">Semua</button>
+      <button onclick="filterTahun('2025')">2025</button>
+      <button onclick="filterTahun('2024')">2024</button>
+      <button onclick="filterTahun('2023')">2023</button>
+    </div>
+  </header>
+
+  <section class="kegiatan-container" id="kegiatanList">
+    <div class="kegiatan-card" data-tahun="2025">
+      <img src="img/20252.jpg" alt="Kegiatan 1" />
+      <div class="kegiatan-info">
+        <h3>Nyate Bareng Anggota Kartar</h3>
+        <p>7 Juni 2025</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2025">
+      <img src="img/20251.jpg" alt="Kegiatan 2" />
+      <div class="kegiatan-info">
+        <h3>Gotong Royong Membangun Pelmas Rt 11</h3>
+        <p>7 Juni 2025</p>
+      </div>
+    </div>
+    
+    <div class="kegiatan-card" data-tahun="2025">
+      <img src="img/20255.jpg" alt="Kegiatan 2" />
+      <div class="kegiatan-info">
+        <h3>Rapat Membahas Proposal Agustusan</h3>
+        <p>3 Juni 2025</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2025">
+      <img src="img/20254.jpg" alt="Kegiatan 2" />
+      <div class="kegiatan-info">
+        <h3>Jalan-Jalan Anggota Kartar & Ibu PKK</h3>
+        <p>19 April 2025</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2025">
+      <img src="img/20253.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Ketua & Sekretaris</h3>
+        <p>4 Mei 2025</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2024">
+      <img src="img/20241.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Festival Kesenian</h3>
+        <p>7 September 2024</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2024">
+      <img src="img/20245.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Pembagian Doorprize</h3>
+        <p>7 September 2024</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2024">
+      <img src="img/20242.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Lomba Badminton Bapak-Bapak</h3>
+        <p>17 Agustus 2024</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2024">
+      <img src="img/20243.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Lomba Mengeluarkan Bola Dari Kardus</h3>
+        <p>17 Agustus 2024</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2024">
+      <img src="img/20244.jpg" alt="Kegiatan 4" />
+      <div class="kegiatan-info">
+        <h3>Lomba Estafet Sendal</h3>
+        <p>17 Agustus 2024</p>
+      </div>
+    </div>
+    
+    <div class="kegiatan-card" data-tahun="2023">
+      <img src="img/20246.jpg" alt="Kegiatan 5" />
+      <div class="kegiatan-info">
+        <h3>Pawai Hari Kemerdekaan</h3>
+        <p>19 Agustus 2023</p>
+      </div>
+    </div>
+
+    <div class="kegiatan-card" data-tahun="2023">
+      <img src="img/20231.jpg" alt="Kegiatan 5" />
+      <div class="kegiatan-info">
+        <h3>Panitia 17 Agustusan & Ibu PKK</h3>
+        <p>17 Agustus 2023</p>
+      </div>
+    </div>
+    
+    <div class="kegiatan-card" data-tahun="2023">
+      <img src="img/20232.jpg" alt="Kegiatan 5" />
+      <div class="kegiatan-info">
+        <h3>Lomba Ambil Koin Di Semangka</h3>
+        <p>17 Agustus 2023</p>
+      </div>
+    </div>
+    
+    <div class="kegiatan-card" data-tahun="2023">
+      <img src="img/20233.jpg" alt="Kegiatan 5" />
+      <div class="kegiatan-info">
+        <h3>Lomba Memasukan Paku Ke Botol</h3>
+        <p>17 Agustus 2023</p>
+      </div>
+    </div>
+    
+    <div class="kegiatan-card" data-tahun="2023">
+      <img src="img/20234.jpg" alt="Kegiatan 5" />
+      <div class="kegiatan-info">
+        <h3>Lomba Estafet Air</h3>
+        <p>17 Agustus 2023</p>
+      </div>
+    </div>
+   
+  <!-- Tombol Kembali ke Beranda -->
+  <div class="back-to-home">
+    <a href="index.html">
+      <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+    </a>
+  </div>
+
+  <script>
+    function filterTahun(tahun) {
+      const cards = document.querySelectorAll(".kegiatan-card");
+      cards.forEach(card => {
+        if (tahun === "all" || card.dataset.tahun === tahun) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // Tambah/kurangi class active pada tombol
+      const buttons = document.querySelectorAll(".filter-buttons button");
+      buttons.forEach(btn => btn.classList.remove("active"));
+      document.querySelector(`.filter-buttons button[onclick*="${tahun}"]`).classList.add("active");
+    }
+  </script>
+</body>
+</html>
