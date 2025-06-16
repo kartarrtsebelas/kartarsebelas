@@ -4,164 +4,462 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galeri Kegiatan</title>
-  <link rel="stylesheet" href="style-galeri.css" />
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --primary: #38bdf8;
+      --bg: #0f172a;
+      --text: #e2e8f0;
+      --card-bg: #1e293b;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+      padding-bottom: 120px;
+      overflow-x: hidden;
+    }
+
+    /* Canvas animasi bintang */
+    canvas#bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    /* Animasi fade-in judul */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      padding: 40px 20px 0;
+      font-size: 2.5rem;
+      color: var(--primary);
+      animation: fadeInUp 1s ease-out both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .filter-buttons {
+      margin: 30px auto 10px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 0 15px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .filter-buttons button {
+      background: var(--card-bg);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .filter-buttons button:hover,
+    .filter-buttons button.active {
+      background: var(--primary);
+      color: var(--bg);
+      box-shadow: 0 0 15px var(--primary);
+    }
+
+    .gallery {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      display: none;
+      position: relative;
+      overflow: hidden;
+      border-radius: 15px;
+      background: #000;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .card.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: 0.4s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.08);
+      filter: brightness(0.8);
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 1rem;
+      text-align: left;
+    }
+
+    .date-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .sponsor-container {
+      display: none;
+      padding: 10px 20px;
+    }
+
+    .sponsor-title, .media-title {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 10px 0 5px;
+      opacity: 0.6;
+    }
+
+    .sponsor-logos, .media-logos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+
+    .sponsor-logos img, .media-logos img {
+      height: 35px;
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+    }
+
+    .sponsor-logos img:hover, .media-logos img:hover {
+      opacity: 0.8;
+    }
+
+    .floating-back-link {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      color: var(--bg);
+      padding: 12px 22px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .floating-back-link:hover {
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.5);
+    }
+
+    .floating-back-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card img {
+        height: 180px;
+      }
+
+      .caption {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .filter-buttons button {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+      }
+
+      .card img {
+        height: 160px;
+      }
+
+      .floating-back-link {
+        font-size: 0.8rem;
+        padding: 10px 18px;
+      }
+
+      .floating-back-link svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .sponsor-logos img,
+      .media-logos img {
+        height: 30px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Galeri Kegiatan</h1>
-    <div class="filter-buttons">
-      <button onclick="filterTahun('all')" class="active">Semua</button>
-      <button onclick="filterTahun('2025')">2025</button>
-      <button onclick="filterTahun('2024')">2024</button>
-      <button onclick="filterTahun('2023')">2023</button>
-    </div>
-  </header>
 
-  <section class="kegiatan-container" id="kegiatanList">
-    <div class="kegiatan-card" data-tahun="2025">
-      <img src="img/20252.jpg" alt="Kegiatan 1" />
-      <div class="kegiatan-info">
-        <h3>Nyate Bareng Anggota Kartar</h3>
-        <p>7 Juni 2025</p>
-      </div>
-    </div>
+  <!-- Canvas untuk animasi bintang -->
+  <canvas id="bg-canvas"></canvas>
 
-    <div class="kegiatan-card" data-tahun="2025">
-      <img src="img/20251.jpg" alt="Kegiatan 2" />
-      <div class="kegiatan-info">
-        <h3>Gotong Royong Membangun Pelmas Rt 11</h3>
-        <p>7 Juni 2025</p>
-      </div>
-    </div>
-    
-    <div class="kegiatan-card" data-tahun="2025">
-      <img src="img/20255.jpg" alt="Kegiatan 2" />
-      <div class="kegiatan-info">
-        <h3>Rapat Membahas Proposal Agustusan</h3>
-        <p>3 Juni 2025</p>
-      </div>
-    </div>
+  <!-- Judul Galeri -->
+  <h1>Galeri Kegiatan</h1>
 
-    <div class="kegiatan-card" data-tahun="2025">
-      <img src="img/20254.jpg" alt="Kegiatan 2" />
-      <div class="kegiatan-info">
-        <h3>Jalan-Jalan Anggota Kartar & Ibu PKK</h3>
-        <p>19 April 2025</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2025">
-      <img src="img/20253.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Memasang Umbul-Umbul Untuk HUt DKI Jakarta</h3>
-        <p>4 Mei 2025</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2024">
-      <img src="img/20241.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Festival Kesenian</h3>
-        <p>7 September 2024</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2024">
-      <img src="img/20245.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Pembagian Doorprize</h3>
-        <p>7 September 2024</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2024">
-      <img src="img/20242.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Lomba Badminton Bapak-Bapak</h3>
-        <p>17 Agustus 2024</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2024">
-      <img src="img/20243.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Lomba Mengeluarkan Bola Dari Kardus</h3>
-        <p>17 Agustus 2024</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2024">
-      <img src="img/20244.jpg" alt="Kegiatan 4" />
-      <div class="kegiatan-info">
-        <h3>Lomba Estafet Sendal</h3>
-        <p>17 Agustus 2024</p>
-      </div>
-    </div>
-    
-    <div class="kegiatan-card" data-tahun="2023">
-      <img src="img/20246.jpg" alt="Kegiatan 5" />
-      <div class="kegiatan-info">
-        <h3>Pawai Hari Kemerdekaan</h3>
-        <p>19 Agustus 2023</p>
-      </div>
-    </div>
-
-    <div class="kegiatan-card" data-tahun="2023">
-      <img src="img/20231.jpg" alt="Kegiatan 5" />
-      <div class="kegiatan-info">
-        <h3>Panitia 17 Agustusan & Ibu PKK</h3>
-        <p>17 Agustus 2023</p>
-      </div>
-    </div>
-    
-    <div class="kegiatan-card" data-tahun="2023">
-      <img src="img/20232.jpg" alt="Kegiatan 5" />
-      <div class="kegiatan-info">
-        <h3>Lomba Ambil Koin Di Semangka</h3>
-        <p>17 Agustus 2023</p>
-      </div>
-    </div>
-    
-    <div class="kegiatan-card" data-tahun="2023">
-      <img src="img/20233.jpg" alt="Kegiatan 5" />
-      <div class="kegiatan-info">
-        <h3>Lomba Memasukan Paku Ke Botol</h3>
-        <p>17 Agustus 2023</p>
-      </div>
-    </div>
-    
-    <div class="kegiatan-card" data-tahun="2023">
-      <img src="img/20234.jpg" alt="Kegiatan 5" />
-      <div class="kegiatan-info">
-        <h3>Lomba Estafet Air</h3>
-        <p>17 Agustus 2023</p>
-      </div>
-    </div>
-   
-  <!-- Tombol Kembali ke Beranda -->
-  <div class="back-to-home">
-    <a href="index.html">
-      <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-    </a>
+  <!-- Tombol Filter -->
+  <div class="filter-buttons">
+    <button class="filter-btn" data-year="2023">2023</button>
+    <button class="filter-btn" data-year="2024">2024</button>
+    <button class="filter-btn" data-year="2025">2025</button>
   </div>
 
+  <!-- Galeri -->
+  <div class="gallery">
+    <!-- Galeri 2023 -->
+    <div class="card" data-year="2023">
+      <img src="img/img/20246.jpg" alt="Kegiatan 2023" />
+      <div class="date-tag">19 Agustus 2023</div>
+      <div class="caption">Pawai Hari Kemerdekaan</div>
+    </div>
+    <div class="card" data-year="2023">
+      <img src="img/img/20231.jpg" alt="Kegiatan 2023" />
+      <div class="date-tag">17 Agustus 2023</div>
+      <div class="caption">Panitia 17 Agustusan & Ibu PKK</div>
+    </div>
+        <div class="card" data-year="2023">
+      <img src="img/img/20232.jpg" alt="Kegiatan 2023" />
+      <div class="date-tag">17 Agustus 2023</div>
+      <div class="caption">Lomba Ambil Koin Di Semangka</div>
+    </div>
+    <div class="card" data-year="2023">
+      <img src="img/img/20233.jpg" alt="Kegiatan 2023" />
+      <div class="date-tag">17 Agustus 2023</div>
+      <div class="caption">Lomba Memasukan Paku Ke Botol</div>
+    </div>
+        <div class="card" data-year="2023">
+      <img src="img/img/20234.jpg" alt="Kegiatan 2023" />
+      <div class="date-tag">17 Agustus 2023</div>
+      <div class="caption">Lomba Estafet Air</div>
+    </div>
+
+    <!-- Galeri 2024 -->
+    <div class="card" data-year="2024">
+      <img src="img/img/20241.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">7 September 2024</div>
+      <div class="caption">Festival Kesenian</div>
+    </div>
+        <div class="card" data-year="2024">
+      <img src="img/img/20248.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">7 September 2024</div>
+      <div class="caption">Panitia Festival Kesenian & Wings</div>
+    </div>
+    <div class="card" data-year="2024">
+      <img src="img/img/20245.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">7 September 2024</div>
+      <div class="caption">Pembagian Doorprize</div>
+      </div>
+       <div class="card" data-year="2024">
+      <img src="img/img/20249.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">7 September 2024</div>
+      <div class="caption">Pembagian Hadiah Lomba</div>
+    </div>
+              <div class="card" data-year="2024">
+      <img src="img/img/202410.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">17 Agustus 2024</div>
+      <div class="caption">Panitia 17 Agustusan & Ibu PKK</div>
+    </div>
+          <div class="card" data-year="2024">
+      <img src="img/img/20247.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">17 Agustus 2024</div>
+      <div class="caption">Pembagian Sampling Gratis</div>
+    </div>
+        <div class="card" data-year="2024">
+      <img src="img/img/20242.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">17 Agustus 2024</div>
+      <div class="caption">Lomba Badminton Bapak-Bapak</div>
+    </div>
+    <div class="card" data-year="2024">
+      <img src="img/img/20243.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">17 Agustus 2024</div>
+      <div class="caption">Lomba Mengeluarkan Bola Dari Kardus</div>
+    </div>
+        <div class="card" data-year="2024">
+      <img src="img/img/20244.jpg" alt="Kegiatan 2024" />
+      <div class="date-tag">17 Agustus 2024</div>
+      <div class="caption">Lomba Lomba Estafet Sendal</div>
+    </div>
+
+    <!-- Galeri 2025 -->
+        <div class="card" data-year="2025">
+      <img src="img/img/20256.jpg" alt="Kegiatan 2025" />
+      <div class="date-tag">12 Juni 2025</div>
+      <div class="caption">Memasang Bendera Untuk Hut DKI Jakarta</div>
+    </div>
+    <div class="card" data-year="2025">
+      <img src="img/img/20252.jpg" alt="Kegiatan 2025" />
+      <div class="date-tag">7 Juni 2025</div>
+      <div class="caption">Nyate Bareng Anggota Kartar</div>
+    </div>
+    <div class="card" data-year="2025">
+      <img src="img/img/20251.jpg" alt="Kegiatan 2025" />
+      <div class="date-tag">7 Juni 2025</div>
+      <div class="caption">Gotong Royong Membangun Pelmas Rt 11</div>
+    </div>
+      <div class="card" data-year="2025">
+      <img src="img/img/20255.jpg" alt="Kegiatan 2025" />
+      <div class="date-tag">3 Juni 2025</div>
+      <div class="caption">Rapat Membahas Proposal Agustusan</div>
+    </div>
+    <div class="card" data-year="2025">
+      <img src="img/img/20254.jpg" alt="Kegiatan 2025" />
+      <div class="date-tag">19 April 2025</div>
+      <div class="caption">Jalan-Jalan Anggota Kartar & Ibu PKK</div>
+    </div>
+    </div>
+    
+      <!-- Sponsor -->
+  <div class="sponsor-container" id="sponsor2024">
+    <div class="sponsor-title">SPONSOR</div>
+    <div class="sponsor-logos">
+      <a href="#"><img src="img/1.png" alt="Sponsor 1"></a>
+      <a href="#"><img src="img/2.png" alt="Sponsor 2"></a>
+      <a href="#"><img src="img/3.png" alt="Sponsor 3"></a>
+      <a href="#"><img src="img/4.png" alt="Sponsor 4"></a>
+      <a href="#"><img src="img/5.png" alt="Sponsor 5"></a>
+    </div>
+
+    <div class="media-title">MEDIA PARTNER</div>
+    <div class="media-logos">
+      <a href="#"><img src="img/6.png" alt="Media Partner 1"></a>
+      <a href="#"><img src="img/7.png" alt="Media Partner 2"></a>
+    </div>
+  </div>
+
+  <!-- Tombol Kembali -->
+  <a href="index.html" class="floating-back-link">
+    <svg viewBox="0 0 24 24">
+      <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Kembali ke Beranda
+  </a>
+
+  <!-- Script animasi bintang -->
   <script>
-    function filterTahun(tahun) {
-      const cards = document.querySelectorAll(".kegiatan-card");
+    // Filter galeri
+    const buttons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+    const sponsor2024 = document.getElementById('sponsor2024');
+
+    function showCards(year) {
       cards.forEach(card => {
-        if (tahun === "all" || card.dataset.tahun === tahun) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
+        card.classList.remove('show');
+        card.style.display = 'none';
+        if (card.dataset.year === year) {
+          card.style.display = 'block';
+          setTimeout(() => card.classList.add('show'), 10);
         }
       });
-
-      // Tambah/kurangi class active pada tombol
-      const buttons = document.querySelectorAll(".filter-buttons button");
-      buttons.forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.filter-buttons button[onclick*="${tahun}"]`).classList.add("active");
+      sponsor2024.style.display = (year === "2024") ? 'block' : 'none';
     }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        const year = button.dataset.year;
+        showCards(year);
+      });
+    });
+
+    // Background animasi bintang
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.2,
+        dy: (Math.random() - 0.5) * 0.2
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        s.x += s.dx;
+        s.y += s.dy;
+        if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+        if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    drawStars();
+
+    window.addEventListener('resize', () => {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    });
   </script>
 </body>
 </html>

@@ -3,113 +3,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tentang Saya</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Tentang Kami</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e2e8f0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       min-height: 100vh;
-      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    .about-container {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 30px;
-      border-radius: 20px;
+    canvas#bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .container {
       max-width: 800px;
+      margin: auto;
+      padding: 40px 20px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      animation: fadeInUp 1s ease-out;
+      animation: fadeUp 1s ease;
     }
 
-    .about-container img.profile {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin-bottom: 15px;
+    h1 {
+      font-size: 2.2rem;
+      color: #38bdf8;
+      margin: 25px 0 35px;
     }
 
-    .about-container h2 {
-      margin: 10px 0;
+    .section {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      animation: fadeSlide 0.8s ease;
     }
 
-    .about-container p {
-      font-size: 1rem;
-      opacity: 0.9;
-      line-height: 1.6;
+    .section i {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #38bdf8;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 0;
     }
 
-    .btn-galeri,
-    .back-btn {
-      margin-top: 20px;
-      display: inline-block;
+    @keyframes fadeUp {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes fadeSlide {
+      from {opacity: 0; transform: translateY(50px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .floating-back-link {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0f172a;
       padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      color: white;
+      border: none;
+      border-radius: 30px;
       text-decoration: none;
       font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       transition: all 0.3s ease;
-      transform: translateY(20px);
-      opacity: 0;
-      animation: fadeInUp 0.8s forwards;
+      z-index: 999;
     }
 
-    .btn-galeri {
-      animation-delay: 0.5s;
+    .floating-back-link:hover {
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.5);
     }
 
-    .back-btn {
-      animation-delay: 0.9s;
+    .floating-back-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
     }
 
-    .btn-galeri:hover,
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
-    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.6rem; }
+      .section p { font-size: 1rem; }
+      .floating-back-link {
+        font-size: 0.85rem;
+        padding: 10px 20px;
+      }
 
-    .btn-galeri i,
-    .back-btn i {
-      margin-right: 8px;
+      .floating-back-link svg {
+        width: 16px;
+        height: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="about-container">
-    <img src="logo.png" alt="Foto Profil" class="profile" />
-    <h2>Kartar Sebelas</h2>
-    <p>
-      adalah organisasi yang berdedikasi dalam membangun semangat gotong royong, kepemudaan, dan kegiatan sosial masyarakat. Tujuannya adalah menciptakan lingkungan yang lebih baik melalui kontribusi nyata.
-    </p>
 
-    <!-- Tombol ke Galeri -->
-    <a href="galeri.html" class="btn-galeri">
-      <i class="fas fa-images"></i> Lihat Galeri Kegiatan
-    </a>
+  <!-- Canvas Animasi -->
+  <canvas id="bg-canvas"></canvas>
 
-    <!-- Tombol Kembali -->
-    <a href="index.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-    </a>
+  <!-- Konten -->
+  <div class="container">
+    <h1>Tentang Kami</h1>
+
+    <div class="section">
+      <i class="fas fa-users"></i>
+      <p>
+        Kami adalah <strong>Karang Taruna</strong> yang aktif menggerakkan generasi muda untuk berkarya dan berkontribusi dalam bidang sosial, budaya, dan ekonomi masyarakat.
+      </p>
+    </div>
+
+    <div class="section">
+      <i class="fas fa-hand-holding-heart"></i>
+      <p>
+        Kegiatan kami mencakup pelatihan keterampilan, bakti sosial, olahraga, pengelolaan sampah, serta pengembangan potensi dan kreativitas pemuda desa.
+      </p>
+    </div>
+
+    <div class="section">
+      <i class="fas fa-bullseye"></i>
+      <p>
+        Visi kami adalah menjadi wadah pembinaan pemuda yang <strong>produktif, kreatif</strong>, dan <strong>berdaya saing</strong> di tingkat lokal maupun nasional.
+      </p>
+    </div>
   </div>
+
+  <!-- Tombol Kembali -->
+  <a href="index.html" class="floating-back-link">
+    <svg viewBox="0 0 24 24">
+      <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Kembali ke Beranda
+  </a>
+
+  <!-- Script Animasi Bintang -->
+  <script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.2,
+        dy: (Math.random() - 0.5) * 0.2
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        s.x += s.dx;
+        s.y += s.dy;
+        if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+        if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    window.addEventListener('resize', () => {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    });
+  </script>
+
 </body>
 </html>
