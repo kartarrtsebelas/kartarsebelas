@@ -5,7 +5,7 @@
   <link rel="shortcut icon" type="image/png" href="img/Logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Linktree Sosial</title>
+<title>Link Sosial & Informasi | Karang Taruna RT 011</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -128,6 +128,7 @@
       color: #94a3b8;
     }
 
+
     /* Responsif */
     @media (max-width: 600px) {
       .link-card {
@@ -184,8 +185,8 @@
   <footer class="fade-in">
     &copy; 2025 Karang Taruna RT 011. All rights reserved.
   </footer>
-
-  <!-- JS Partikel Galaxy / Paralax -->
+  
+ <!-- JS Partikel Galaxy / Paralax -->
   <script>
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
@@ -224,6 +225,36 @@
       canvas.height = innerHeight;
     });
   </script>
+
+  <!-- Chatbase Bot -->
+  <script>
+  (function(){
+    if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+      window.chatbase = (...args) => {
+        if(!window.chatbase.q){ window.chatbase.q = [] }
+        window.chatbase.q.push(args)
+      };
+      window.chatbase = new Proxy(window.chatbase, {
+        get(target, prop) {
+          if (prop === "q") return target.q;
+          return (...args) => target(prop, ...args);
+        }
+      });
+    }
+    const onLoad = function(){
+      const script = document.createElement("script");
+      script.src = "https://www.chatbase.co/embed.min.js";
+      script.id = "EBiWe44B6hMCW02arkySE";
+      script.domain = "www.chatbase.co";
+      document.body.appendChild(script);
+    };
+    if(document.readyState === "complete"){ onLoad(); }
+    else { window.addEventListener("load", onLoad); }
+  })();
+  </script>
+</body>
+</html>
+
 
 </body>
 </html>
