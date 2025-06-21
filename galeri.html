@@ -246,7 +246,18 @@
       .media-logos img {
         height: 30px;
       }
-    }
+      
+@keyframes fadeCard {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -337,7 +348,7 @@
         <div class="card" data-year="2024">
       <img src="img/img/20244.jpg" alt="Kegiatan 2024" />
       <div class="date-tag">17 Agustus 2024</div>
-      <div class="caption">Lomba Estafet Sendal</div>
+      <div class="caption">Lomba Lomba Estafet Sendal</div>
     </div>
 
     <!-- Galeri 2025 -->
@@ -394,72 +405,84 @@
     Kembali ke Beranda
   </a>
 
-  <!-- Script animasi bintang -->
-  <script>
-    // Filter galeri
-    const buttons = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('.card');
-    const sponsor2024 = document.getElementById('sponsor2024');
+ <script>
+  // --- Filter Galeri & Sponsor ---
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+  const sponsorContainers = document.querySelectorAll('.sponsor-container');
 
-    function showCards(year) {
-      cards.forEach(card => {
-        card.classList.remove('show');
-        card.style.display = 'none';
-        if (card.dataset.year === year) {
-          card.style.display = 'block';
-          setTimeout(() => card.classList.add('show'), 10);
-        }
-      });
-      sponsor2024.style.display = (year === "2024") ? 'block' : 'none';
-    }
-
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        const year = button.dataset.year;
-        showCards(year);
-      });
+  function showCards(year) {
+    cards.forEach(card => {
+      card.classList.remove('show');
+      card.style.display = 'none';
+      if (card.dataset.year === year) {
+        card.style.display = 'block';
+        card.style.animation = 'fadeCard 0.5s ease forwards';
+        setTimeout(() => card.classList.add('show'), 10);
+      }
     });
 
-    // Background animasi bintang
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
+    // Sembunyikan semua sponsor container
+    sponsorContainers.forEach(sc => {
+      sc.style.display = 'none';
+    });
+
+    // Tampilkan sponsor sesuai tahun jika ada
+    const sponsorEl = document.getElementById('sponsor' + year);
+    if (sponsorEl) sponsorEl.style.display = 'block';
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      const year = button.dataset.year;
+      showCards(year);
+    });
+  });
+
+  // 🔥 Default tampilkan tahun 2025 saat halaman dibuka
+  document.querySelector('.filter-btn[data-year="2025"]').click();
+
+  // --- Background Bintang ---
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  const stars = [];
+  for (let i = 0; i < 100; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2
+    });
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ffffff';
+    stars.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+      s.x += s.dx;
+      s.y += s.dy;
+      if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+      if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  drawStars();
+
+  window.addEventListener('resize', () => {
     canvas.width = innerWidth;
     canvas.height = innerHeight;
+  });
+</script>
 
-    const stars = [];
-    for (let i = 0; i < 100; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.5 + 0.5,
-        dx: (Math.random() - 0.5) * 0.2,
-        dy: (Math.random() - 0.5) * 0.2
-      });
-    }
-
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ffffff';
-      stars.forEach(s => {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-        s.x += s.dx;
-        s.y += s.dy;
-        if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
-        if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
-      });
-      requestAnimationFrame(drawStars);
-    }
-
-    drawStars();
-
-    window.addEventListener('resize', () => {
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
-    });
-  </script>
 </body>
 </html>
